@@ -1,10 +1,9 @@
+//Simple Pie Chart Object
 !function() {
     var simplePieChart = {};
-
     var pie = d3.layout.pie().sort(null).value(function(d) {
         return d.value;
     });
-
     simplePieChart.draw = function(id, w, h, data) {
         if (Math.min(w, h) < 150) {
             alert('The area is too small to draw a simple pie chart');
@@ -33,7 +32,7 @@
                     var fontSize = (r * (1.3) * 100 / 200);
                     d3.select('#infoRect').append('text').text(function() {
                         return d.data.label;
-                    }).attr('x', r / 4 + 5).attr('y', r / 8+3).attr('text-anchor', 'middle').attr('font-size', fontSize + '%');
+                    }).attr('x', r / 4 + 5).attr('y', r / 8 + 3).attr('text-anchor', 'middle').attr('font-size', fontSize + '%');
 
 
                     d3.select('#infoRect').append('text').text(function() {
@@ -74,6 +73,55 @@
     this.simplePieChart = simplePieChart;
 }();
 
+//Simple Bar Chart Object
 !function() {
+    var simpleBarChart = {};
 
+    simpleBarChart.draw = function(id, w, h, data) {
+        var svg = d3.select('#' + id).append('svg').attr('width', w).attr('height', h).append('g').attr('transform', "translate(" + 10 + "," + 10 + ")");
+
+        var x = d3.scale.ordinal().rangeRoundBands([0, w], .1);
+        //allocate some area for labels
+        var y = d3.scale.ordinal().range([h - 40, 0]);
+
+        var xAxis = d3.svg.axis().scale(x).orient('bottom');
+        var yAxis = d3.svg.axis().scale(y).orient('left').ticks(10, '%');
+
+        var xAxisNode = svg.append('g').attr('class', 'xAxis').attr('transform', "translate(" + 0 + "," + (h - 40) + ")").call(xAxis);
+        xAxisNode.select('path').attr('stroke', 'black').attr('stroke-width', 1).attr('fill', 'none').attr('shape-rendering', 'crispEdges');
+
+        var yAxisNode = svg.append('g').attr('class', 'yAxis').call(yAxis);
+        yAxisNode.select('path').attr('stroke', 'black').attr('stroke-width', 1).attr('fill', 'none').attr('shape-rendering', 'crispEdges');
+
+        var unitW = w / data.length;
+        var padding = unitW / 4;
+        var barW = (w - 6 * padding) / data.length;
+        var maxVal = 0;
+        $.each(data, function(i, d) {
+            if (maxVal < d.value) {
+                maxVal = d.value;
+            }
+        });
+        var nodes = svg.selectAll('g.bar').data(data).enter().append('g')
+        var rects = nodes.append('rect').attr('width', barW).attr('height', function(d) {
+            return d.value / maxVal * (h - 40);
+        }).attr('x', function(d, i) {
+            return i * (barW + padding) + padding;
+        }).attr('y', function(d) {
+            return h - 40 - (d.value / maxVal * (h - 40));
+        }).attr('fill', function(d) {
+            return d.color;
+        });
+
+        nodes.append('text').text(function(d) {
+            return d.label;
+        }).attr('x', function(d, i) {
+            return i * (barW + padding) + padding +10;
+        }).attr('y', function(d) {
+            return h - 20;
+        })
+
+    };
+
+    this.simpleBarChart = simpleBarChart;
 }();
