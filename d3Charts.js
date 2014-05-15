@@ -12,7 +12,7 @@
         } else {
             var r = (Math.min(w, h)) / 2;
             var svg = d3.select('#' + id).append('svg').attr('width', w).attr('height', h).append('g').attr('transform', "translate(" + r + "," + r + ")");
-            var nodes = svg.selectAll('g').data(pie(data)).enter().append('g')
+            var nodes = svg.selectAll('g').data(pie(data)).enter().append('g');
             var path = nodes.append('path').attr('fill', function(d) {
                 return d.data.color;
             }).attr('d', d3.svg.arc().outerRadius(r)).each(function(d) {
@@ -37,7 +37,7 @@
                     }).attr('x', r / 4 + 5).attr('y', r / 8 + 5 + 15).attr('text-anchor', 'middle');
                 }
                 d3.select(this).on('mousemove', function() {
-                    d3.select('#' + id + ' svg').select('#infoRect').attr('transform', "translate(" + (d3.event.pageX - d3.select('#' + id + ' svg')[0][0].offsetLeft-d3.select('#' + id + ' svg')[0][0].offsetParent.offsetLeft) + "," + (d3.event.pageY - d3.select('#' + id + ' svg')[0][0].offsetTop-d3.select('#' + id + ' svg')[0][0].offsetParent.offsetTop) + ")");
+                    d3.select('#' + id + ' svg').select('#infoRect').attr('transform', "translate(" + (d3.event.pageX - d3.select('#' + id + ' svg')[0][0].offsetLeft - d3.select('#' + id + ' svg')[0][0].offsetParent.offsetLeft) + "," + (d3.event.pageY - d3.select('#' + id + ' svg')[0][0].offsetTop - d3.select('#' + id + ' svg')[0][0].offsetParent.offsetTop) + ")");
                 });
             });
 
@@ -47,40 +47,26 @@
                     return d.data.color;
                 });
             });
-        }
-        ;
 
-        var labelContainer = d3.select('#' + id + ' svg').append('g').attr('transform', "translate(" + 0 + "," + 2 * r + ")");
-        var label = labelContainer.selectAll('g.labels').data(data).enter().append('g').attr('class', 'labels');
-        label.append('text').text(function(d) {
-            return d.label;
-        }).attr('x',20).attr('y', function(d,i){
-            return i*15+10;
-        });
-        label.append('rect').attr('width',10).attr('height',10).attr('fill',function(d){
-            return d.color;
-        }).attr('x',0).attr('y',function(d,i){
-            return i*15;
-        });
-    }
+            nodes.append('text').text(function(d) {
+                var angle = Math.abs(d.startAngle - d.endAngle) * 180 / Math.PI;
+                var rate = angle * 100 / 360;
+                return parseFloat(rate).toFixed(2) + '%';
+            }).attr('y', function(d) {
+                //var angle = ((Math.abs(d.startAngle - d.endAngle) / 2) + (d.startAngle)) * 180 / Math.PI+45;
+                console.log();
+                return (r * 2 / 3) * Math.sin(d.startAngle + (Math.abs(d.startAngle - d.endAngle) / 2) - Math.PI / 2);
+            }).attr('x', function(d) {
+                var angle = ((Math.abs(d.startAngle - d.endAngle) / 2) + (d.startAngle)) * 180 / Math.PI;
+                return (r * 2 / 3) * Math.cos(d.startAngle + (Math.abs(d.startAngle - d.endAngle) / 2) - Math.PI / 2);
+            }).attr('fill', 'white').attr('font-size', function() {
+                return (r *100/ 200 )+ '%';
+            });
+        }
+    };
     this.simplePieChart = simplePieChart;
 }();
 
 !function() {
-    var aChart = {};
 
-    var pie = d3.layout.pie().sort(null).value(function(d) {
-        return d.value;
-    });
-
-    aChart.draw = function(id, w, h, data) {
-        var svg = d3.select('#' + id).append('svg').attr('width', w).attr('height', h).append('g').attr('transform', "translate(" + w / 2 + "," + h / 2 + ")");
-        var r = Math.min(w, h) / 2;
-        var path = svg.selectAll('path').data(pie(data)).enter().append('path').attr('fill', function(d) {
-            return d.data.color;
-        }).attr('d', d3.svg.arc().outerRadius(r)).each(function(d) {
-            this._current = d
-        });
-    };
-    this.aChart = aChart;
 }();
