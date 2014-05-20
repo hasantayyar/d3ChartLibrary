@@ -137,3 +137,59 @@
     }
     this.simpleBarChart = simpleBarChart;
 }();
+
+!function() {
+    var simpleLineChart = {};
+
+    simpleLineChart.draw = function(id, w, h, data) {
+        var leftPadding = 50;
+        var svg = d3.select('#' + id).append('svg').attr('width', w).attr('height', h).append('g').attr('transform', "translate(" + leftPadding + "," + 10 + ")");
+        //calculate maximum and total value for percentage rates
+        var maxVal = 0;
+        var nodeNum = 0;
+        $.each(data, function(i, d) {
+            if (maxVal < d.value) {
+                maxVal = d.value;
+            }
+            nodeNum++;
+        });
+        //allocate some area for y labels
+        var xWidth = w - leftPadding;
+        var x = d3.scale.ordinal().rangeRoundBands([0, xWidth]);
+
+        //allocate some area for labels
+        var yHeight = h - 80;
+        var y = d3.scale.linear().range([yHeight, 0]);
+
+        var xAxis = d3.svg.axis().scale(x).orient('bottom');
+        var yAxis = d3.svg.axis().scale(y).orient('left');
+
+
+        var line = d3.svg.line()
+                .x(function(d) {
+                    return x(d.label);
+                })
+                .y(function(d) {
+                    return y(d.value);
+                });
+
+        x.domain(data.map(function(data) {
+            return data.label;
+        }));
+        y.domain([0, d3.max(data, function(data) {
+                return maxVal;
+            })]);
+
+        var xAxisNode = svg.append('g').attr('class', 'xAxis').attr('transform', "translate(" + 0 + "," + (yHeight) + ")").call(xAxis);
+        xAxisNode.select('path').attr('stroke', 'black').attr('stroke-width', 1).attr('fill', 'none').attr('shape-rendering', 'crispEdges');
+        
+        xAxisNode.selectAll('text').attr("x", -(xWidth/nodeNum/2));
+        
+        var yAxisNode = svg.append('g').attr('class', 'yAxis').call(yAxis);
+        yAxisNode.select('path').attr('stroke', 'black').attr('stroke-width', 1).attr('fill', 'none').attr('shape-rendering', 'crispEdges');
+        yAxisNode.selectAll('text').attr('dx', '.3em').attr('font-size', '70%');
+
+        var linePath = svg.append('path').datum(data).attr('class', 'line').attr('d', line).attr('stroke', 'blue').attr('fill', 'none').style('shape-rendering', 'crispEdges');
+    };
+    this.simpleLineChart = simpleLineChart;
+}();
