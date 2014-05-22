@@ -12,15 +12,24 @@
             <div id='myChart'></div>
         </div>        
         
-        <script>
+        <script>                
             var myData = [
                 {label: "A", color: "#990099", value: 590},
                 {label: "B", color: "#DC3912", value: 1400},
                 {label: "C", color: "#FF9900", value: 600},
                 {label: "D", color: "#109618", value: 100},
-                {label: "E", color: "#6F00FF", value: 1200},
+                {label: "E", color: "#6F00FF", value: 120},       
+                {label: "F", color: "#6EC1A5", value: 50},       
+                {label: "G", color: "#AF9F88", value: 100},
+                {label: "H", color: "#FB7878", value: 60},
+                {label: "I", color: "#4CB9CE", value: 100},
+                {label: "J", color: "#6EC1A5", value: 142},
+                
             ];
-            simplePieChart.draw('myChart', 300, 500, myData);
+            //Choose your chart by deletin comments
+            //simplePieChart.draw('myChart', 300, 500, myData);
+            //simpleBarChart.draw('myChart', 500, 400, myData);
+            simpleLineChart.draw('myChart', 300, 500, myData);
         </script>
     </body>
 </html>
